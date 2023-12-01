@@ -1,10 +1,10 @@
 Package: rvr2spatial
-Title: Clear and Update PostgreSQL Tables. (One Line, Title Case)
+Title: Clear and Update PostgreSQL Tables.
 Version: 0.0.0.9000
 Authors@R: 
     person("Rubiere", "Ramirez", , "rramirez@mail.sib.org.bz", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: clears existing tables and updates tables with MICS7 Data (one paragraph).
+Description: clears existing tables and updates tables with MICS7 Data.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
