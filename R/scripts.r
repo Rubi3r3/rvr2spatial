@@ -22,7 +22,7 @@ clear_ed<- function(c, e, t) {
       population = NULL,
       tot_hh_number = NULL,
       interview__key = NULL,
-      int_bldg_desc = NULL WHERE ed_2023 = '", ed_update,"'; ")
+      int_bldg_desc = NULL WHERE ed_2023 = '", e,"'; ")
  
       DBI::dbExecute(conn2, query)
         
