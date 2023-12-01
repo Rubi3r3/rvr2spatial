@@ -3,7 +3,7 @@ Title: Clear and Update PostgreSQL Tables.
 Version: 0.0.0.9000
 Authors@R: 
     person("Rubiere", "Ramirez", , "rramirez@mail.sib.org.bz", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "https://orcid.org/0009-0000-6493-082X"))
 Description: clears existing tables and updates tables with MICS7 Data.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
