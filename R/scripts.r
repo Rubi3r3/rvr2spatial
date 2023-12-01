@@ -9,12 +9,13 @@
 #'@example
 #'clear_ed(conn, '00-000-00')
 #' @export
-clear_ed<- function(conn, ed_number) {
-    conn2 <- conn
-    for (s in 1:length(ed_number)) {
-      ed_update <- ed_number[[s]]
+clear_ed<- function(c, e, t) {
+    conn2 <- c
+    t <- t
+    for (s in 1:length(e)) {
+      e <- e[[s]]
  
-      query_no_match<- paste0("UPDATE sde.mics7_building SET photovalid = NULL,
+      query<- paste0("UPDATE",t," SET photovalid = NULL,
       photo_cnt = NULL, living_quarter = NULL, bldg_refn = bldg_number,
       bldg_newn = NULL,
       isbldg = NULL,
@@ -23,9 +24,12 @@ clear_ed<- function(conn, ed_number) {
       interview__key = NULL,
       int_bldg_desc = NULL WHERE ed_2023 = '", ed_update,"'; ")
  
-      DBI::dbExecute(conn2, query_no_match)
+      DBI::dbExecute(conn2, query)
         
  
     }
  return(print('Completed'))
 }
+
+
+
