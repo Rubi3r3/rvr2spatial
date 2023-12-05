@@ -167,9 +167,7 @@ get_vr <- function(ed_list, location) {
 
     vr_inconsistencies_filter <- subset(vr_inconsistencies, ed == ed_no)
 
-i_hhs <- dplyr::all_comp_vr_raw %>%
-  dplyr::group_by(interview__key, hhs_roster__id) %>%
-  dplyr::tally()
+i_hhs <- dplyr::tally(dplyr::group_by(all_comp_vr_raw, interview__key, hhs_roster__id))
 
     i_hhs2<- na.omit(i_hhs)
 
@@ -179,8 +177,7 @@ i_hhs <- dplyr::all_comp_vr_raw %>%
 
     total_hhs<- as.data.frame(sum(i_hhs3$hhs_count))
 
-    all_comp_vr_to_process <- all_comp_vr_raw %>%
-      distinct(interview__key, .keep_all = TRUE)
+    all_comp_vr_to_process <- dplyr::distinct(all_comp_vr_raw, interview__key, .keep_all = TRUE)
     all_comp_vr_to_process <- filter(all_comp_vr_to_process, responsible1.x != 'DELETION_VR23')
 
     filter_all_comp_vr_to_process <- filter(all_comp_vr_to_process, isBuilding == 'Yes - Main Building' | living_quarter == 'Yes')
