@@ -10,4 +10,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports:
-        DBI, dplyr, magrittr, rpostgis, RMySQL, sf, sp, tidyverse, tydyr, plyr
+        DBI, dplyr, magrittr, rpostgis, RMySQL, sf, sp, tidyverse, tidyr, plyr
