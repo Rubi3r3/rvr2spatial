@@ -58,7 +58,7 @@ assign_interview__keys<- function (c, e) {
  
      DBI::dbExecute(c, query_clear)
 
-     query_fvr <- "SELECT * FROM fullvr_mics"
+     query_fvr <- "SELECT * FROM fullVR_mics"
      fvr<- dbGetQuery(db, query_fvr)
 
      if ("Orange Walk" %in% fvr$district) {
@@ -160,7 +160,7 @@ get_vr <- function(ed_list, location) {
     spat_building_filter <- subset(spat_building, ed_2023 == ed_no)
     spat_building_filter <- sf::st_drop_geometry(spat_building_filter)
 
-    query_fvr <- "SELECT * FROM fullvr_mics"
+    query_fvr <- "SELECT * FROM fullVR_mics"
     fvr<- dbGetQuery(db, query_fvr)
 
     all_comp_vr_raw <- subset(fvr, ed == ed_no)
