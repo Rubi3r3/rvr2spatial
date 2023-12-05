@@ -1,6 +1,6 @@
 Package: rvr2spatial
 Title: Clear and Update PostgreSQL Tables.
-Version: 0.0.0.9000
+Version: 1.0
 Authors@R: 
     person("Rubiere", "Ramirez", , "rramirez@mail.sib.org.bz", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0009-0000-6493-082X"))
