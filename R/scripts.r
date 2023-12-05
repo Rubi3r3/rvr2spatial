@@ -30,6 +30,18 @@ clear_ed<- function(c, e, t) {
  return(print('Completed.'))
 }
 
+#' Function to assign interview key to spatial data
+#'
+#' @param1 Connection to postgres
+#' 
+#' @param2 imput ed
+#'
+#' @return the completed query and checks if there are errors.
+#'
+#'@example
+#'clear_ed(conn, '00-000-00')
+#' @export
+
 assign_interview__keys<- function (c, e) {
 
   for (s in 1:length(e)) {
