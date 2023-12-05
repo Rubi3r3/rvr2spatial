@@ -4,7 +4,12 @@
 \alias{clear_ed}
 \title{Function to clear data}
 \usage{
-clear_ed(conn, ed_number)
+clear_ed(c, e, t)
+}
+\arguments{
+\item{Connection}{to postgres}
+
+\item{imput}{ed}
 }
 \value{
 the completed query.

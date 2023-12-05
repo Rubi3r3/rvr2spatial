@@ -1,13 +1,13 @@
 #' Function to clear data
 #'
-#' @param1 Connection to postgres
+#' @param Connection to postgres
 #' 
-#' @param2 imput ed
+#' @param imput ed
 #'
 #' @return the completed query.
 #'
 #'@example
-#'clear_ed(conn, '00-000-00')
+#'clear_ed(conn, '51-001-00')
 #' @export
 clear_ed<- function(c, e, t) {
     conn2 <- c
@@ -32,14 +32,14 @@ clear_ed<- function(c, e, t) {
 
 #' Function to assign interview key to spatial data
 #'
-#' @param1 Connection to postgres
+#' @param Connection to postgres
 #' 
-#' @param2 imput ed
+#' @param imput ed
 #'
 #' @return the completed query and checks if there are errors.
 #'
 #'@example
-#'clear_ed(conn, '00-000-00')
+#'clear_ed(conn, '41-002-00')
 #' @export
 
 assign_interview__keys<- function (c, e) {
