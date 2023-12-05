@@ -61,7 +61,7 @@ assign_interview__keys<- function (c, e) {
 
      all_comp_vr_raw <- subset(fullvr_mics, ed == e_update)
 
-     all_comp_vr_to_process <- all_comp_vr_raw %>%
+     all_comp_vr_to_process <- dplyr::all_comp_vr_raw %>%
        dplyr::distinct(interview__key, .keep_all = TRUE) %>%
        dplyr::filter(responsible1.x != 'DELETION_VR23')
 
