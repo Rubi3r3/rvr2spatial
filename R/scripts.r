@@ -146,6 +146,8 @@ assign_interview__keys<- function (c, e) {
 
 get_vr <- function(ed_list, location) {
 
+  spat_building<- sf::st_read(conn, query = "Select * from sde.mics7_building")
+
   ed_hhs<- data.frame()
   raw_vrs<- data.frame()
   vrs<- data.frame()
@@ -155,14 +157,11 @@ get_vr <- function(ed_list, location) {
 
     ed_no <- ed_list[[e]]
     
-    query_building<- "Select * from sde.mics7_building"
-    spat_building<- sf::st_read(conn, query_building)
-
     spat_building_filter <- subset(spat_building, ed_2023 == ed_no)
     spat_building_filter <- st_drop_geometry(spat_building_filter)
 
     query_fvr <- "SELECT * FROM fullvr_mics"
-     fvr<- dbGetQuery(db, query_fvr)
+    fvr<- dbGetQuery(db, query_fvr)
 
     all_comp_vr_raw <- subset(fvr, ed == ed_no)
 
