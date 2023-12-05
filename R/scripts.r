@@ -158,7 +158,7 @@ get_vr <- function(ed_list, location) {
     ed_no <- ed_list[[e]]
     
     spat_building_filter <- subset(spat_building, ed_2023 == ed_no)
-    spat_building_filter <- st_drop_geometry(spat_building_filter)
+    spat_building_filter <- sf::st_drop_geometry(spat_building_filter)
 
     query_fvr <- "SELECT * FROM fullvr_mics"
     fvr<- dbGetQuery(db, query_fvr)
