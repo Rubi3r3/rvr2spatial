@@ -156,7 +156,7 @@ get_vr <- function(ed_list, location) {
     ed_no <- ed_list[[e]]
     
     query_building<- "Select * from sde.mics7_building"
-    spat_building<- DBI::dbExecute (conn, query_building)
+    spat_building<- dbExecute (conn, query_building)
 
     spat_building_filter <- subset(spat_building, ed_2023 == ed_no) %>%
       st_drop_geometry()
