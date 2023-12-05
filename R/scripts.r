@@ -82,7 +82,7 @@ assign_interview__keys<- function (c, e) {
                                    "' WHERE mics7_building.blk_uid = '", blk_uid, "';")
      }
      for (u in 1:length(update_queries_test)) {
-     dbExecute(c, update_queries_test[[u]])
+     DBI::dbExecute(c, update_queries_test[[u]])
        }
 
      query_building<- paste0("SELECT * FROM sde.mics7_building")
