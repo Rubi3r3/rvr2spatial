@@ -167,7 +167,7 @@ get_vr <- function(ed_list, location) {
 
     vr_inconsistencies_filter <- subset(vr_inconsistencies, ed == ed_no)
 
-i_hhs <- all_comp_vr_raw %>%
+i_hhs <- dplyr::all_comp_vr_raw %>%
   dplyr::group_by(interview__key, hhs_roster__id) %>%
   dplyr::tally()
 
