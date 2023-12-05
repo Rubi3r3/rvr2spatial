@@ -2,3 +2,4 @@
 
 export(assign_interview__keys)
 export(clear_ed)
+export(get_vr)
