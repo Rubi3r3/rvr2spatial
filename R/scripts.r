@@ -1,4 +1,4 @@
-#' Function to clear some ed data for specific columns from PostgreSQL 
+#' Function to clear some ed data for specific columns from PostgreSQL.
 #'
 #' @param C connection to PostgreSQL Database.
 #' 
@@ -32,11 +32,11 @@ clear_ed<- function(c, e, t) {
  return(print('Completed.'))
 }
 
-#' Function to assign interview key from MySql to PostgreSQL
+#' Function to assign interview key from MySql to PostgreSQL.
 #'
 #' @param c Connection to PostgreSQL database.
 #' 
-#' @param e imput ed
+#' @param e imput ed.
 #'
 #' @return Returns the completed query and checks if there are errors.
 #'
@@ -250,7 +250,7 @@ get_vr <- function(ed_list, location) {
 #'  
 #' @param ed imput ed. Make it a list if you have multiple ed.
 #' 
-#' @param location input location
+#' @param location input location.
 #'
 #' @returns Returns the completed query, and a list of counts.
 #'
