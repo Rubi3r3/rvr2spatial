@@ -371,7 +371,7 @@ get_completed_ed<-function() {
   query2<- "SELECT * FROM mics7_dp_assignments"
   mics7_dp_assignments <- dbGetQuery(conn, query2)
 
-  noMatch <- anti_join(completed_query, mics7_dp_assignments, by = "ed_2023")
+  noMatch <- dplyr::anti_join(completed_query, mics7_dp_assignments, by = "ed_2023")
 
   cat(paste0("Total EDs Completed: ", nrow(completed_query),".\n"))
   cat(paste0("'", noMatch$ed_2023, "',\n"))
