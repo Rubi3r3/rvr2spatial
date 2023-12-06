@@ -210,6 +210,118 @@ get_vr <- function(ed_list, location) {
   return(print("Completed."))
 }
 
+#' Function to sort spatial blocks and buildings and check if they are in sequence
+#'
+#'  
+#' @param imput ed. Make it a list if you have multiple ed.
+#' 
+#' @param input location
+#'
+#' @returns the completed query, and a list of counts.
+#'
+#'@example
+#'sequence_check(list('54-444-44'), '\\directory\\')
+#' @export
+
+sequence_check<- function(ed_list, location) {
+  
+  spat_building<- st_read(conn, query = "SELECT * FROM mics7_building") %>% 
+    st_zm(drop = T, what = "ZM") %>% 
+    st_transform(4326)
+  
+  spat_blocks<- st_read(conn, query = "SELECT * FROM mics7_blocks") %>% 
+    st_zm(drop = T, what = "ZM") %>% 
+    st_transform(4326)
+  
+  spat_ed<- st_read(conn, query = "SELECT * FROM mics7_ed") %>% 
+    st_zm(drop = T, what = "ZM") %>% 
+    st_transform(4326)
+  
+  checkALL<- data.frame()
+  for(e in 1:length(ed_list)) {
+    
+    ed_no <- ed_list[[e]]
+    
+    e_ed<- subset(spat_ed, spat_ed$ed_2023 == ed_no)
+
+    e_blocks<-st_join(spat_blocks, e_ed, left = FALSE)
+    
+    #Check sequence of blocks
+    e_blocks_check <- subset(spat_blocks, spat_blocks$ed_2023 == ed_no)
+    e_blocks_check$blk_newn_2023 <- as.numeric(e_blocks_check$blk_newn_2023)
+    e_blocks_check<- e_blocks_check[order(e_blocks_check$blk_newn_2023),]
+    e_blocks_check$seq_chk<-1:nrow(e_blocks_check)
+    e_blocks_check$match<- ifelse(e_blocks_check$blk_newn_2023==e_blocks_check$seq_chk,"Yes","No")
+    
+    count_no <- sum(e_blocks_check$match == "No")
+    
+    if(count_no >0 ) { 
+      cat(paste0("ED ",ed_no," have blocks out of sequence. \n"))
+      subset_e_e_blocks_check <- subset(e_blocks_check, e_blocks_check$match == "No")
+      cat(paste0(subset_e_e_blocks_check$blk_newn_2023," is out of sequence. \n \n"))
+    } else {
+      cat(paste0("ED ",ed_no," have no blocks out of sequence. \n \n"))
+    }
+    
+    #use the layers from the joins
+    #e_building<- st_join(spat_building, e_blocks, left = FALSE)
+    #e_building_use <- subset (e_building, select=c(cluster, ed_2023, blk_newn_2023.y,bldg_newn, bldg_uid, blk_uid.x, isbldg, living_quarter, interview__key))
+    
+    e_building_use <- subset(spat_building, ed_2023 == ed_no) %>%
+      st_drop_geometry()
+    
+    e_building_use <- subset(e_building_use, select=c(cluster, ed_2023, blk_newn_2023,bldg_newn, bldg_uid, blk_uid, isbldg, living_quarter, interview__key))
+    
+    #Check empty values of building
+    null_value <- is.na(e_building_use$interview__key)
+    num_null_int<- sum(null_value)
+    
+    if(num_null_int > 0) {
+      cat(paste0("ED ",ed_no," has empty interview__key. \n"))
+      subset_e_building_use <- subset(e_building_use, is.na(interview__key))
+      cat(paste0(subset_e_building_use$blk_uid," is empty interview__key. \n \n"))
+    } else {
+      cat(paste0("ED ", ed_no, " has no missing interview__key. \n \n"))
+    }
+    
+    e_building_use_check <- filter(e_building_use, isbldg == 'Yes - Part of a building' | isbldg == 'Not a building' & living_quarter == 'No')
+    
+    non_null <- !is.na(e_building_use_check$bldg_newn)
+    num_non_null_values <- sum(non_null)
+    
+    
+    if (num_non_null_values > 0) {
+      cat(paste0("ED ",ed_no," has bldg_newn where it shouldn't. \n"))
+      subset_e_building_use_check <- subset(e_building_use_check, !is.na(bldg_newn))
+      cat(paste0("blk_uid ",subset_e_building_use_check$blk_uid," has some missing interview__key. \n \n"))
+    } else {
+      cat(paste0("ED ",ed_no," has no bldg_newn in Yes - Part of Building or Not a building with no living quarters. \n \n"))
+    }
+    
+    e_building_use_filter <- filter(e_building_use, isbldg == 'Yes - Main Building' | living_quarter == 'Yes')
+
+    e_building_use_filter$blk_newn_2023 <- as.numeric(e_building_use_filter$blk_newn_2023)
+    e_building_use_filter$bldg_newn<- as.numeric(e_building_use_filter$bldg_newn)
+    e_building_use_filter<- e_building_use_filter[order(e_building_use_filter$blk_newn_2023,e_building_use_filter$bldg_newn ),]
+    
+    e_building_use_filter$seq_chk<-1:nrow(e_building_use_filter)
+
+    all(e_building_use_filter$bldg_newn == e_building_use_filter$seq_chk)
+
+    e_building_use_filter$match<- ifelse(e_building_use_filter$bldg_newn==e_building_use_filter$seq_chk,"Yes","No")
+    
+    checkDf<- subset(e_building_use_filter, e_building_use_filter$match =="No")
+    
+    checkDf_no<- checkDf %>% st_drop_geometry()
+    
+    checkALL <- rbind(checkALL,checkDf_no)
+
+  }
+  countsofError<- as.data.frame(nrow(checkALL))
+  cat(paste0("This(ese) ed(s) has(ve) blg_number(s) ", countsofError," out of sequence. \n"))
+  write.csv(checkALL,paste0(location,"outSeq.csv"), row.names = TRUE)
+  return(paste("Completed."))
+ }
 
 
 
