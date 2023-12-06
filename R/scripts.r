@@ -113,7 +113,7 @@ assign_interview__keys<- function (c, e) {
        }
 
      query_building<- paste0("SELECT * FROM sde.mics7_building")
-     check_buildings<- st_read(c, query = query_building)
+     check_buildings<- sf::st_read(c, query = query_building)
      check_buildings <- check_buildings[check_buildings$ed_2023 == e_update, ]
      null_values <- is.na(check_buildings$interview__key)
      num_null_values <- sum(null_values)
