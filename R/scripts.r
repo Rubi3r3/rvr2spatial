@@ -90,7 +90,7 @@ assign_interview__keys<- function (c, e) {
 
      all_comp_vr_raw <- subset(fvr, ed == e_update)
 
-    all_comp_vr_to_process <- dplyr::distinct(dplyr::all_comp_vr_raw, interview__key, .keep_all = TRUE)
+    all_comp_vr_to_process <- dplyr::distinct(all_comp_vr_raw, interview__key, .keep_all = TRUE)
 
 
      update_queries_test <- character(nrow(all_comp_vr_to_process))
