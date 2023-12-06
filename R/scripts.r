@@ -11,6 +11,7 @@
 #'@example
 #'clear_ed(conn, '51-001-00', 'tablename')
 #' @export
+#' 
 clear_ed<- function(c, e, t) {
     conn2 <- c
     t <- t
@@ -354,5 +355,25 @@ sequence_check<- function(ed_list, location) {
   return(print("Completed."))
  }
 
+#' Function to get the amount of completed eds and see which ones need to be added to mics7_dp_assignment table.
+#'
+#' @returns Returns the completed query, and a list of counts.
+#'
+#' @export
+get_completed_ed<-function() {
+  
+  query_assignments<- "Select *, ed as ed_2023 from mics_ass_summary"
+  completed_query<- dbGetQuery(db, query_assignments)
 
+  completed_query$completed<- ifelse(completed_query$Assignments_Pending == 0, "True", "False")
+  completed_query <- subset(completed_query, completed_query$completed == "True")
 
+  query2<- "SELECT * FROM mics7_dp_assignments"
+  mics7_dp_assignments <- dbGetQuery(conn, query2)
+
+  noMatch <- anti_join(completed_query, mics7_dp_assignments, by = "ed_2023")
+
+  cat(paste0("Total EDs Completed: ", nrow(completed_query),".\n"))
+  cat(paste0("'", noMatch$ed_2023, "',\n"))
+  return(print("Completed."))
+}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scripts.r
 \name{clear_ed}
 \alias{clear_ed}
-\title{Function to clear some ed data for specific columns from PostgreSQL}
+\title{Function to clear some ed data for specific columns from PostgreSQL.}
 \usage{
 clear_ed(c, e, t)
 }
@@ -17,5 +17,5 @@ clear_ed(c, e, t)
 Completed is returned if successful.
 }
 \description{
-Function to clear some ed data for specific columns from PostgreSQL
+Function to clear some ed data for specific columns from PostgreSQL.
 }

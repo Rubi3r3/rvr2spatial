@@ -7,7 +7,7 @@
 sequence_check(ed_list, location)
 }
 \arguments{
-\item{location}{input location}
+\item{location}{input location.}
 
 \item{ed}{imput ed. Make it a list if you have multiple ed.}
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/scripts.r
 \name{assign_interview__keys}
 \alias{assign_interview__keys}
-\title{Function to assign interview key from MySql to PostgreSQL}
+\title{Function to assign interview key from MySql to PostgreSQL.}
 \usage{
 assign_interview__keys(c, e)
 }
 \arguments{
 \item{c}{Connection to PostgreSQL database.}
 
-\item{e}{imput ed}
+\item{e}{imput ed.}
 }
 \value{
 Returns the completed query and checks if there are errors.
 }
 \description{
-Function to assign interview key from MySql to PostgreSQL
+Function to assign interview key from MySql to PostgreSQL.
 }
