@@ -225,11 +225,11 @@ get_vr <- function(ed_list, location) {
 
 sequence_check<- function(ed_list, location) {
   
-  spat_building <- sf::st_transform(st_zm(st_read(conn, query = "SELECT * FROM mics7_building"), drop = TRUE, what = "ZM"), 4326)
+  spat_building <- sf::st_transform(sf::st_zm(sf::st_read(conn, query = "SELECT * FROM mics7_building"), drop = TRUE, what = "ZM"), 4326)
 
-  spat_blocks <- sf::st_transform(st_zm(st_read(conn, query = "SELECT * FROM mics7_blocks"), drop = TRUE, what = "ZM"), 4326)
+  spat_blocks <- sf::st_transform(sf::st_zm(sf::st_read(conn, query = "SELECT * FROM mics7_blocks"), drop = TRUE, what = "ZM"), 4326)
 
-    spat_ed <- sf::st_transform(st_zm(st_read(conn, query = "SELECT * FROM mics7_ed"), drop = TRUE, what = "ZM"), 4326)
+  spat_ed <- sf::st_transform(sf::st_zm(sf::st_read(conn, query = "SELECT * FROM mics7_ed"), drop = TRUE, what = "ZM"), 4326)
 
   
   checkALL<- data.frame()
@@ -239,7 +239,7 @@ sequence_check<- function(ed_list, location) {
     
     e_ed<- subset(spat_ed, spat_ed$ed_2023 == ed_no)
 
-    e_blocks<-st_join(spat_blocks, e_ed, left = FALSE)
+    e_blocks<-sf::st_join(spat_blocks, e_ed, left = FALSE)
     
     #Check sequence of blocks
     e_blocks_check <- subset(spat_blocks, spat_blocks$ed_2023 == ed_no)
@@ -259,7 +259,7 @@ sequence_check<- function(ed_list, location) {
     }
     
     #use the layers from the joins
-    #e_building<- st_join(spat_building, e_blocks, left = FALSE)
+    #e_building<- sf::st_join(spat_building, e_blocks, left = FALSE)
     #e_building_use <- subset (e_building, select=c(cluster, ed_2023, blk_newn_2023.y,bldg_newn, bldg_uid, blk_uid.x, isbldg, living_quarter, interview__key))
     
     e_building_use <- subset(spat_building, ed_2023 == ed_no)
@@ -279,7 +279,7 @@ sequence_check<- function(ed_list, location) {
       cat(paste0("ED ", ed_no, " has no missing interview__key. \n \n"))
     }
     
-    e_building_use_check <- filter(e_building_use, isbldg == 'Yes - Part of a building' | isbldg == 'Not a building' & living_quarter == 'No')
+    e_building_use_check <- dplyr::filter(e_building_use, isbldg == 'Yes - Part of a building' | isbldg == 'Not a building' & living_quarter == 'No')
     
     non_null <- !is.na(e_building_use_check$bldg_newn)
     num_non_null_values <- sum(non_null)
@@ -293,7 +293,7 @@ sequence_check<- function(ed_list, location) {
       cat(paste0("ED ",ed_no," has no bldg_newn in Yes - Part of Building or Not a building with no living quarters. \n \n"))
     }
     
-    e_building_use_filter <- filter(e_building_use, isbldg == 'Yes - Main Building' | living_quarter == 'Yes')
+    e_building_use_filter <- dplyr::filter(e_building_use, isbldg == 'Yes - Main Building' | living_quarter == 'Yes')
 
     e_building_use_filter$blk_newn_2023 <- as.numeric(e_building_use_filter$blk_newn_2023)
     e_building_use_filter$bldg_newn<- as.numeric(e_building_use_filter$bldg_newn)
