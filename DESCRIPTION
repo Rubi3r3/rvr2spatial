@@ -1,5 +1,5 @@
 Package: rvr2spatial
-Title: Clear and Update PostgreSQL Tables.
+Title: Get Visitation Records from MySQL, clear and update PostgreSQL Tables.
 Version: 1.0.0
 Authors@R: 
     person("Rubiere", "Ramirez", , "rramirez@mail.sib.org.bz", role = c("aut", "cre"),
