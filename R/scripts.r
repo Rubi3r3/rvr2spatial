@@ -90,8 +90,8 @@ assign_interview__keys<- function (c, e) {
 
      all_comp_vr_raw <- subset(fvr, ed == e_update)
 
-     all_comp_vr_to_process <- dplyr::all_comp_vr_raw %>%
-       dplyr::distinct(interview__key, .keep_all = TRUE) 
+    all_comp_vr_to_process <- dplyr::distinct(dplyr::all_comp_vr_raw, interview__key, .keep_all = TRUE)
+
 
      update_queries_test <- character(nrow(all_comp_vr_to_process))
 
@@ -225,17 +225,12 @@ get_vr <- function(ed_list, location) {
 
 sequence_check<- function(ed_list, location) {
   
-  spat_building<- st_read(conn, query = "SELECT * FROM mics7_building") %>% 
-    st_zm(drop = T, what = "ZM") %>% 
-    st_transform(4326)
-  
-  spat_blocks<- st_read(conn, query = "SELECT * FROM mics7_blocks") %>% 
-    st_zm(drop = T, what = "ZM") %>% 
-    st_transform(4326)
-  
-  spat_ed<- st_read(conn, query = "SELECT * FROM mics7_ed") %>% 
-    st_zm(drop = T, what = "ZM") %>% 
-    st_transform(4326)
+  spat_building <- sf::st_transform(st_zm(st_read(conn, query = "SELECT * FROM mics7_building"), drop = TRUE, what = "ZM"), 4326)
+
+  spat_blocks <- sf::st_transform(st_zm(st_read(conn, query = "SELECT * FROM mics7_blocks"), drop = TRUE, what = "ZM"), 4326)
+
+    spat_ed <- sf::st_transform(st_zm(st_read(conn, query = "SELECT * FROM mics7_ed"), drop = TRUE, what = "ZM"), 4326)
+
   
   checkALL<- data.frame()
   for(e in 1:length(ed_list)) {
@@ -267,8 +262,8 @@ sequence_check<- function(ed_list, location) {
     #e_building<- st_join(spat_building, e_blocks, left = FALSE)
     #e_building_use <- subset (e_building, select=c(cluster, ed_2023, blk_newn_2023.y,bldg_newn, bldg_uid, blk_uid.x, isbldg, living_quarter, interview__key))
     
-    e_building_use <- subset(spat_building, ed_2023 == ed_no) %>%
-      st_drop_geometry()
+    e_building_use <- subset(spat_building, ed_2023 == ed_no)
+    e_building_use <-sf::st_drop_geometry(e_building_use)
     
     e_building_use <- subset(e_building_use, select=c(cluster, ed_2023, blk_newn_2023,bldg_newn, bldg_uid, blk_uid, isbldg, living_quarter, interview__key))
     
@@ -312,8 +307,9 @@ sequence_check<- function(ed_list, location) {
     
     checkDf<- subset(e_building_use_filter, e_building_use_filter$match =="No")
     
-    checkDf_no<- checkDf %>% st_drop_geometry()
-    
+    checkDf_no<- checkDf
+    checkDf_no <- sf::st_drop_geometry(checkDf_no)
+
     checkALL <- rbind(checkALL,checkDf_no)
 
   }
