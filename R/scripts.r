@@ -180,7 +180,7 @@ get_vr <- function(ed_list, location) {
     
     all_comp_vr_to_process <- dplyr::distinct(all_comp_vr_raw, interview__key, .keep_all = TRUE)
     
-    filter_all_comp_vr_to_process <- filter(all_comp_vr_to_process, isBuilding == 'Yes - Main Building' | living_quarter == 'Yes')
+    filter_all_comp_vr_to_process <- dplyr::filter(all_comp_vr_to_process, isBuilding == 'Yes - Main Building' | living_quarter == 'Yes')
     
     ed_hhs<- rbind(ed_hhs, i_hhs3)
     raw_vrs<- rbind(raw_vrs, all_comp_vr_raw)
