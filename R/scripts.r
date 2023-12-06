@@ -93,6 +93,7 @@ assign_interview__keys<- function (c, e) {
      all_comp_vr_raw <- subset(fvr, ed == e_update)
 
     all_comp_vr_to_process <- dplyr::distinct(all_comp_vr_raw, interview__key, .keep_all = TRUE)
+    all_comp_vr_to_process <- dplyr::filter(all_comp_vr_to_process, responsible1.x != 'DELETION_VR23')
 
 
      update_queries_test <- character(nrow(all_comp_vr_to_process))
@@ -210,6 +211,7 @@ get_vr <- function(ed_list, location) {
     total_hhs<- as.data.frame(sum(i_hhs3$hhs_count))
     
     all_comp_vr_to_process <- dplyr::distinct(all_comp_vr_raw, interview__key, .keep_all = TRUE)
+    all_comp_vr_to_process <- dplyr::filter(all_comp_vr_to_process, responsible1.x != 'DELETION_VR23')
     
     filter_all_comp_vr_to_process <- dplyr::filter(all_comp_vr_to_process, isBuilding == 'Yes - Main Building' | living_quarter == 'Yes')
     
