@@ -5,7 +5,7 @@ Authors@R:
     person("Rubiere", "Ramirez", , "rramirez@mail.sib.org.bz", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0009-0000-6493-082X"))
 Description: clears existing tables and updates tables with MICS7 Data.
-License: MIT + LICENSE.md
+License: GNU General Public License (GPL) + LICENSE.md
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
