@@ -320,7 +320,7 @@ sequence_check<- function(ed_list, location) {
   countsofError<- as.data.frame(nrow(checkALL))
   cat(paste0("This(ese) ed(s) has(ve) blg_number(s) ", countsofError," out of sequence. \n"))
   write.csv(checkALL,paste0(location,"outSeq.csv"), row.names = TRUE)
-  return(paste("Completed."))
+  return(print("Completed."))
  }
 
 
