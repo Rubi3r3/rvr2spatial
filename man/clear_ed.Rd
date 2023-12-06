@@ -2,18 +2,20 @@
 % Please edit documentation in R/scripts.r
 \name{clear_ed}
 \alias{clear_ed}
-\title{Function to clear data}
+\title{Function to clear some ed data for specific columns from PostgreSQL}
 \usage{
 clear_ed(c, e, t)
 }
 \arguments{
-\item{Connection}{to postgres}
+\item{e}{imput ed.}
 
-\item{imput}{ed}
+\item{t}{imput table name to clear.}
+
+\item{C}{connection to PostgreSQL Database.}
 }
 \value{
-the completed query.
+Completed is returned if successful.
 }
 \description{
-Function to clear data
+Function to clear some ed data for specific columns from PostgreSQL
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/scripts.r
 \name{sequence_check}
 \alias{sequence_check}
-\title{Function to sort spatial blocks and buildings and check if they are in sequence}
+\title{Function to sort spatial blocks and buildings and check if they are in sequence.}
 \usage{
 sequence_check(ed_list, location)
 }
 \arguments{
-\item{imput}{ed. Make it a list if you have multiple ed.}
+\item{location}{input location}
 
-\item{input}{location}
+\item{ed}{imput ed. Make it a list if you have multiple ed.}
 }
 \value{
-the completed query, and a list of counts.
+Returns the completed query, and a list of counts.
 }
 \description{
-Function to sort spatial blocks and buildings and check if they are in sequence
+Function to sort spatial blocks and buildings and check if they are in sequence.
 }

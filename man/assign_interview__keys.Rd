@@ -2,18 +2,18 @@
 % Please edit documentation in R/scripts.r
 \name{assign_interview__keys}
 \alias{assign_interview__keys}
-\title{Function to assign interview key to spatial data}
+\title{Function to assign interview key from MySql to PostgreSQL}
 \usage{
 assign_interview__keys(c, e)
 }
 \arguments{
-\item{Connection}{to postgres}
+\item{c}{Connection to PostgreSQL database.}
 
-\item{imput}{ed}
+\item{e}{imput ed}
 }
 \value{
-the completed query and checks if there are errors.
+Returns the completed query and checks if there are errors.
 }
 \description{
-Function to assign interview key to spatial data
+Function to assign interview key from MySql to PostgreSQL
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/scripts.r
 \name{get_vr}
 \alias{get_vr}
-\title{Function to get visitation records and compare it to the spatail data.}
+\title{Function to get visitation records in csv and compare it to the spatail data.}
 \usage{
 get_vr(ed_list, location)
 }
 \arguments{
-\item{imput}{ed}
+\item{location}{Input location for where the files will be stored.}
 
-\item{input}{location}
+\item{imput}{ed in a list.}
 }
 \value{
-the completed query, and a list of counts.
+Returns a csv, the completed query, and a list of counts.
 }
 \description{
-Function to get visitation records and compare it to the spatail data.
+Function to get visitation records in csv and compare it to the spatail data.
 }
