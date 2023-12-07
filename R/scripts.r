@@ -28,7 +28,8 @@ clear_ed<- function(c, e, t) {
       int_bldg_desc = NULL WHERE ed_2023 = '", ed_no ,"'; ")
  
       DBI::dbExecute(conn2, query)
-        
+
+      cat(paste0("ED ", ed_no ," cleared."))
  
     }
  return(print('Completed.'))
