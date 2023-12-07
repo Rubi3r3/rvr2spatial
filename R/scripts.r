@@ -15,8 +15,9 @@
 clear_ed<- function(c, e, t) {
     conn2 <- c
     t <- t
+    e <- e
     for (s in 1:length(e)) {
-      e <- e [[s]]
+      ed_no <- e[[s]]
       query<- paste0("UPDATE ",t," SET photovalid = NULL,
       photo_cnt = NULL, living_quarter = NULL, bldg_refn = bldg_number,
       bldg_newn = NULL,
@@ -24,7 +25,7 @@ clear_ed<- function(c, e, t) {
       population = NULL,
       tot_hh_number = NULL,
       interview__key = NULL,
-      int_bldg_desc = NULL WHERE ed_2023 = '", e ,"'; ")
+      int_bldg_desc = NULL WHERE ed_2023 = '", ed_no ,"'; ")
  
       DBI::dbExecute(conn2, query)
         
