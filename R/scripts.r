@@ -29,7 +29,7 @@ clear_ed<- function(c, e, t) {
  
       DBI::dbExecute(conn2, query)
 
-      cat(paste0("ED ", ed_no ," cleared."))
+      cat(paste0("ED ", ed_no ," cleared. \n \n"))
  
     }
  return(print('Completed.'))
