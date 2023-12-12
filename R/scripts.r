@@ -379,3 +379,56 @@ get_completed_ed<-function() {
   cat(paste0("'", noMatch$ed_2023, "',\n"))
   return(print("Completed."))
 }
+
+#' Function to AutoNumber buildings in the spatial database.
+#'
+#'  
+#' @param c PostgreSQL Connection.
+#' 
+#' @param ed_list Single ED or a list of ED. 
+#'
+#' @returns Returns the completed query.
+#'
+#'@example
+#'autonumber_ed(conn, list('54-444-44'))
+#' @export
+
+autonumber_ed<- function(c, ed_list) {
+  
+  spat_building <- sf::st_transform(sf::st_zm(sf::st_read(conn, query = "SELECT * FROM mics7_building"), drop = TRUE, what = "ZM"), 4326)
+  
+  for(e in 1:length(ed_list)) {
+    
+    ed_no <- ed_list[[e]]
+
+    e_building_use <- subset(spat_building, ed_2023 == ed_no)
+    e_building_use <-sf::st_drop_geometry(e_building_use)
+    
+    e_building_use <- subset(e_building_use, select=c(cluster, ed_2023, blk_newn_2023,bldg_number, bldg_uid, blk_uid, isbldg, living_quarter, interview__key))
+    
+    e_building_use_filter <- dplyr::filter(e_building_use, isbldg == 'Yes - Main Building' | living_quarter == 'Yes')
+    
+    e_building_use_filter$blk_newn_2023 <- as.numeric(e_building_use_filter$blk_newn_2023)
+    e_building_use_filter$bldg_number<- as.numeric(e_building_use_filter$bldg_number)
+    e_building_use_filter<- e_building_use_filter[order(e_building_use_filter$blk_newn_2023,e_building_use_filter$bldg_number),]
+    
+    e_building_use_filter$nnew <-1:nrow(e_building_use_filter)
+    
+    
+    
+    update_queries <- character(nrow(e_building_use_filter))
+    
+    for (i in seq_len(nrow(e_building_use_filter))) {
+      bldg_newn <- e_building_use_filter$nnew[i]
+      blk_uid <- e_building_use_filter$blk_uid[i]
+      
+      update_queries[i] <- paste0("UPDATE sde.mics7_building SET bldg_newn = '", bldg_newn,
+                                       "' WHERE mics7_building.blk_uid = '", blk_uid, "';")
+    }
+    for (u in 1:length(update_queries)) {
+      DBI::dbExecute(c, update_queries[[u]])
+    }
+   cat(paste0("ED ",ed_no," has been renumbered updated. \n"))
+  }
+  return("Completed.")
+}
