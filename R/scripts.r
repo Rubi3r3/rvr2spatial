@@ -375,7 +375,7 @@ get_completed_ed<-function() {
 
   noMatch <- dplyr::anti_join(completed_query, mics7_dp_assignments, by = "ed_2023")
 
-  cat(paste0("Total EDs Completed: ", nrow(completed_query), " (", (nrow(completed_query)/207*100), "%). \n \n"))
+  cat(paste0("Total EDs Completed: ", nrow(completed_query), "(", round((nrow(completed_query)/207*100), 1), "%). \n \n"))
   cat(paste0("'", noMatch$ed_2023, "',\n"))
   return(print("Completed."))
 }
