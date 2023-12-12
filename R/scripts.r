@@ -428,7 +428,7 @@ autonumber_ed<- function(c, ed_list) {
     for (u in 1:length(update_queries)) {
       DBI::dbExecute(c, update_queries[[u]])
     }
-   cat(paste0("ED ",ed_no," has been renumbered updated. \n"))
+   cat(paste0("ED ",ed_no," has been renumbered. \n"))
   }
   return("Completed.")
 }
