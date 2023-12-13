@@ -381,7 +381,7 @@ get_completed_ed<-function() {
   cat(paste0("'", noMatch$ed_2023, "',\n")) 
   } else {
   cat(paste0("Total EDs Completed: ", nrow(completed_query), "(", round((nrow(completed_query)/207*100), 1), "%). \n \n"))
-  cat(paste0("No completed MICS7 EDs."))
+  cat(paste0("No completed MICS7 EDs. \n"))
   return(print("Completed."))
   }
 }
