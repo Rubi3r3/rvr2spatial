@@ -374,10 +374,14 @@ get_completed_ed<-function() {
   mics7_dp_assignments <- dbGetQuery(conn, query2)
 
   noMatch <- dplyr::anti_join(completed_query, mics7_dp_assignments, by = "ed_2023")
+  count_noMatch<- nrow(noMatch)
 
+  if(count_noMatch != 0) {
   cat(paste0("Total EDs Completed: ", nrow(completed_query), "(", round((nrow(completed_query)/207*100), 1), "%). \n \n"))
-  cat(paste0("'", noMatch$ed_2023, "',\n"))
+  cat(paste0("'", noMatch$ed_2023, "',\n")) 
+  } else {
   return(print("Completed."))
+  }
 }
 
 #' Function to AutoNumber buildings in the spatial database.
