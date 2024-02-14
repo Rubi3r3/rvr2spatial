@@ -438,3 +438,132 @@ autonumber_ed<- function(c, ed_list) {
   }
   return("Completed.")
 }
+
+
+#' Function to Reconcile non spatial data to spatial database.
+#'
+#'  
+#' @param c PostgreSQL Connection.
+#' 
+#' @param e Single ED or a list of ED. 
+#'
+#' @returns Returns the completed query.
+#'
+#'@example
+#'reconcile_vr_spatial(conn, list('54-444-44'))
+#' @export
+
+reconcile_vr_spatial<-function(c, e) {
+  spat_build<- st_read(conn, query = "SELECT objectid, district, ed_2023, blk_number, bldg_number, isbldg, living_quarter as spat_living_quart, interview__key, shape FROM mics7_building") %>% 
+  st_zm(drop = T, what = "ZM") %>% 
+  st_transform(4326)
+
+  query1<- "SELECT district, ed, block, buildingID, isBuilding, living_quarter, `responsible1.x`, description, interview__key FROM fullVR_mics"
+
+  fvr<- dbGetQuery(db, query1)
+
+
+  if ("Orange Walk" %in% fvr$district) {
+    fvr$district[fvr$district == "Orange Walk"] <- "2"
+    }
+  if ("Belize" %in% fvr$district) {
+    fvr$district[fvr$district == "Belize"] <- "3"
+    }
+  if ("Corozal" %in% fvr$district) {
+    fvr$district[fvr$district == "Corozal"] <- "1"
+    }
+  if ("Cayo" %in% fvr$district) {
+    fvr$district[fvr$district == "Cayo"] <- "4"
+    }
+  if ("Stann Creek" %in% fvr$district) {
+    fvr$district[fvr$district == "Stann Creek"] <- "5"
+    }
+  if ("Toledo" %in% fvr$district) {
+      fvr$district[fvr$district == "Toledo"] <- "6"
+    }
+  if ("1" %in% fvr$living_quarter) {
+      fvr$living_quarter[fvr$living_quarter == "1"] <- "Yes"
+    }
+  if ("2" %in% fvr$living_quarter) {
+      fvr$living_quarter[fvr$living_quarter == "2"] <- "No"
+    }
+
+  fvr$blk_uid <- paste0(fvr$district,"-",fvr$ed,"-",fvr$block,"-",fvr$buildingID)
+
+  all_fvr <- dplyr::distinct(fvr, interview__key, .keep_all = TRUE)
+  all_fv <- dplyr::filter(all_fvr, responsible1.x != 'DELETION_VR23')
+
+  all_build<- spat_build %>%
+    st_drop_geometry()
+
+  all_build$spat_living_quart[all_build$spat_living_quart == "NA"] <- "No"
+
+  for(a in 1:length(exclude_int_key)) {
+    b <- exclude_int_key[[a]]
+    all_build<- all_build[all_build$interview__key != b, ]
+  }
+
+  for(c in 1:length(exclude_ed)) {
+    d <- exclude_ed[[c]]
+    all_build<- all_build[all_build$ed_2023 != d, ]
+  }
+
+  all_compare_df <- full_join(all_fvr, all_build, by = "interview__key")
+  all_compare_df$living_quarter[is.na(all_compare_df$living_quarter)] <- "No"
+  all_compare_df$isbuilding_result<- ifelse(all_compare_df$isBuilding == all_compare_df$isbldg, "T", "F")
+  all_compare_df$livingq_result<- ifelse(all_compare_df$living_quarter == all_compare_df$spat_living_quart,"T","F")
+
+  all_diff_table<- subset(all_compare_df, all_compare_df$isbuilding_result == "F" | all_compare_df$livingq_result == "F")
+
+  for (o in 1:length(e)) {
+    ed_no <- e[[o]]
+
+  all_comp_vr_raw <- subset(fvr, ed == ed_no)
+
+  all_comp_vr_to_process <- dplyr::distinct(all_comp_vr_raw, interview__key, .keep_all = TRUE)
+  all_comp_vr_to_process <- dplyr::filter(all_comp_vr_to_process, responsible1.x != 'DELETION_VR23')
+
+  r_build<- subset(spat_build, spat_build$ed_2023 == ed_no)
+  r_build<- r_build %>%
+    st_drop_geometry()
+
+  compare_df <- full_join(all_comp_vr_to_process, r_build, by = "interview__key")  # full_join includes all rows from both data frames
+
+  # Replace NULL with NA in the data frame
+  compare_df$living_quarter[is.na(compare_df$living_quarter)] <- "NA"
+
+  compare_df$isbuilding_result <- ifelse(compare_df$isBuilding == compare_df$isbldg, "T", "F")
+  compare_df$livingq_result <- ifelse(compare_df$living_quarter == compare_df$spat_living_quart, "T", "F")
+
+  diff_table <- subset(compare_df, compare_df$isbuilding_result == "F" | compare_df$livingq_result == "F")
+
+  if(nrow(diff_table) > 0)
+  {
+
+    cat(paste0("\nA total of: ",nrow(diff_table)," record(s) was(ere) updated/modified in the visitation records. \n"))
+    cat(paste0("\nobjectid=",diff_table$objectid," Interview__key='",diff_table$interview__key,"' isBuilding match? ", diff_table$isbuilding_result, ". Living_quarter match? ", diff_table$livingq_result,". blk_uid='",diff_table$blk_uid,"'"))
+  
+  
+  update_spat_query <- character(nrow(diff_table))
+
+  for (i in seq_len(nrow(diff_table))) {
+    interview__key <- diff_table$interview__key[i]
+    living_quarter <- diff_table$living_quarter[i]
+    description <- gsub("'", "''", diff_table$description[i])
+    is_building <- diff_table$isBuilding[i]
+
+    update_spat_query[i] <- paste0("UPDATE sde.mics7_building SET living_quarter = '", living_quarter,
+                                     "', int_bldg_desc = '", description,
+                                    "', isbldg = '", is_building,
+                                     "' WHERE mics7_building.interview__key = '", interview__key, "';")
+  }
+  for (u in 1:length(update_spat_query)) {
+   DBI::dbExecute(conn, update_spat_query[[u]])
+   cat(paste0("\n",ed_no," has been updated."))
+  }
+  }else {
+   cat(paste0("\n All Match in ",ed_no,"! \n"))
+  }
+  } 
+  return("Completed.")
+}
