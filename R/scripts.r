@@ -567,3 +567,86 @@ reconcile_vr_spatial<-function(c, e) {
   } 
   return("Completed.")
 }
+
+#' Function to Update interivew__id from MySQL table to PostgreSQL Table.
+#'
+#'  
+#' @param c PostgreSQL Connection.
+#' 
+#' @param e Single ED or a list of ED. 
+#'
+#' @returns Returns the completed query.
+#'
+#'@example
+#'reconcile_vr_spatial(conn, list('54-444-44'))
+#' @export
+
+
+update_interview__id<- function(c, e) {
+  
+  spat_build<- st_read(conn, query = "SELECT objectid, district, ed_2023, blk_number, bldg_number, isbldg, living_quarter as spat_living_quart, interview__key, shape FROM mics7_building") %>% 
+    st_zm(drop = T, what = "ZM") %>% 
+    st_transform(4326)
+  
+  fvr<- dbGetQuery(db, query1)
+  
+  
+  if ("Orange Walk" %in% fvr$district) {
+    fvr$district[fvr$district == "Orange Walk"] <- "2"
+  }
+  if ("Belize" %in% fvr$district) {
+    fvr$district[fvr$district == "Belize"] <- "3"
+  }
+  if ("Corozal" %in% fvr$district) {
+    fvr$district[fvr$district == "Corozal"] <- "1"
+  }
+  if ("Cayo" %in% fvr$district) {
+    fvr$district[fvr$district == "Cayo"] <- "4"
+  }
+  if ("Stann Creek" %in% fvr$district) {
+    fvr$district[fvr$district == "Stann Creek"] <- "5"
+  }
+  if ("Toledo" %in% fvr$district) {
+    fvr$district[fvr$district == "Toledo"] <- "6"
+  }
+  if ("1" %in% fvr$living_quarter) {
+    fvr$living_quarter[fvr$living_quarter == "1"] <- "Yes"
+  }
+  if ("2" %in% fvr$living_quarter) {
+    fvr$living_quarter[fvr$living_quarter == "2"] <- "No"
+  }
+  
+  fvr$blk_uid <- paste0(fvr$district,"-",fvr$ed,"-",fvr$block,"-",fvr$buildingID)
+  
+  all_fvr <- dplyr::distinct(fvr, interview__key, .keep_all = TRUE)
+  all_fvr <- dplyr::filter(all_fvr, responsible1.x != 'DELETION_VR23')
+  
+  all_build<- sf::st_drop_geometry(spat_build)
+  
+  all_build$spat_living_quart[all_build$spat_living_quart == "NA"] <- "No"
+  
+    
+  for(l in 1:length(e)) {
+  
+  ed_no <- e[[l]]
+  
+  ed_numb <- subset(all_fvr, all_fvr$ed == ed_no)
+  
+  update_spat_query <- character(nrow(ed_numb))
+  
+  for (i in seq_len(nrow(ed_numb))) {
+    interview__id<- ed_numb$interview__id[i]
+    interview__key<- ed_numb$interview__key[i]
+    ed_2023<- ed_numb$ed[i]
+
+    update_spat_query[i] <- paste0("UPDATE sde.mics7_building SET interview__id = '", interview__id,
+                                   "' WHERE mics7_building.interview__key = '", interview__key, 
+                                   "' AND mics7_building.ed_2023 = '",ed_2023,"';")
+  }
+  for (u in 1:length(update_spat_query)) {
+    DBI::dbExecute(conn, update_spat_query[[u]])
+  }
+  cat(paste0("\n",ed_no," has been updated."))
+  }
+  return("Completed.")
+}
