@@ -648,7 +648,7 @@ update_interview__id<- function(c, e) {
   for (u in 1:length(update_spat_query)) {
     DBI::dbExecute(conn, update_spat_query[[u]])
   }
-  cat(paste0("\n",ed_no," has been updated. \n"))
+  cat(paste0("\n",ed_no," has been updated."))
   }
   return(cat("\nCompleted."))
 }
