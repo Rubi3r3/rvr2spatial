@@ -650,5 +650,5 @@ update_interview__id<- function(c, e) {
   }
   cat(paste0("\n",ed_no," has been updated. \n"))
   }
-  return("Completed.")
+  return(cat("\nCompleted."))
 }
