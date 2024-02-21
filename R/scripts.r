@@ -588,6 +588,8 @@ update_interview__id<- function(c, e) {
     st_zm(drop = T, what = "ZM") %>% 
     st_transform(4326)
   
+  query1<- "SELECT district, ed, block, buildingID, isBuilding, living_quarter, `responsible1.x`, description, interview__key, interview__id FROM fullVR_mics"
+
   fvr<- dbGetQuery(db, query1)
   
   
