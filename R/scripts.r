@@ -551,11 +551,13 @@ reconcile_vr_spatial<-function(c, e) {
     living_quarter <- diff_table$living_quarter[i]
     description <- gsub("'", "''", diff_table$description[i])
     is_building <- diff_table$isBuilding[i]
+    ed_2023 <- diff_table$ed[i]
 
     update_spat_query[i] <- paste0("UPDATE sde.mics7_building SET living_quarter = '", living_quarter,
                                      "', int_bldg_desc = '", description,
                                     "', isbldg = '", is_building,
-                                     "' WHERE mics7_building.interview__key = '", interview__key, "';")
+                                     "' WHERE mics7_building.interview__key = '", interview__key, 
+                                     "' AND mics7_building.ed_2023 = '",ed_2023,"';")
   }
   for (u in 1:length(update_spat_query)) {
    DBI::dbExecute(conn, update_spat_query[[u]])
